@@ -7,7 +7,7 @@ from backtesting import Backtest
 import binance
 import binance.enums
 
-from bots_config import Bot
+from bots_config import *
 from connect import config
 
 from api_calls.price import get_current_price
@@ -521,21 +521,6 @@ if __name__ == '__main__':
     # Print Welcome Text
     print(Fore.WHITE + Back.BLACK + Style.DIM + ' Welcome to Electro Crypto Bot ')
 
-    # Create Bot Classes
-    bot_indias = Bot('Indias', datetime(2021, 11, 1), 6, config.API_KEY_BINANCE_INDIAS,
-                     config.API_SECRET_BINANCE_INDIAS)
-
-    bot_contreras = Bot('Contreras', datetime(2022, 1, 1), 5, config.API_KEY_BINANCE_CONTRERAS,
-                     config.API_SECRET_BINANCE_CONTRERAS)
-
-    bot_rui = Bot('Rui', datetime(2021, 1, 1), 5, config.API_KEY_BINANCE_RUI,
-                     config.API_SECRET_BINANCE_RUI)
-
-    bot_jeremy = Bot('Jeremy', datetime(2022, 6, 1), 6, config.API_KEY_BINANCE_JEREMY,
-                     config.API_SECRET_BINANCE_JEREMY)
-
-
-
     while True:
 
         print(Fore.BLACK + Style.BRIGHT + ' - Waiting Loop', end='\n')
@@ -545,52 +530,29 @@ if __name__ == '__main__':
         while True:
             timestamp = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             minutes = int(datetime.now().strftime("%M"))
-            time.sleep(15)
+            time.sleep(55)
 
-            if minutes == 1:
+            if minutes == 1 or minutes == 31:
                 break
             elif minutes == counter_minutes:
-                minutesLeft = 60 - minutes
-
+                if minutes >=31:
+                    minutesLeft = 30 - minutes
+                elif minutes >= 31:
+                    minutesLeft = 60 - minutes
                 # LOG INDIAS BOT
-
                 client = bot_indias.connect_bot()
                 print(Fore.BLACK + '    - Logging Indias ', end='')
                 price = get_current_price(bot_symbol, client)
                 trade_on, side, size, real_size = get_trade_info(price, client)
                 wait_log('Indias', client)
                 price_log('Indias', price, side)
-                try:
-                    check_stop_loss('Indias', client)
-                except:
-                    print('Could Not Activate Stop-Loss')
-                    delete_price_log('Indias')
+                # try:
+                #     check_stop_loss('Indias', client)
+                # except:
+                #     print('Could Not Activate Stop-Loss')
+                #     delete_price_log('Indias')
 
-                # LOG RUI BOT
-                client = bot_rui.connect_bot()
-                print(Fore.BLACK + '    - Logging Rui ', end='')
-                price = get_current_price(bot_symbol, client)
-                trade_on, side, size, real_size = get_trade_info(price, client)
-                wait_log('Rui', client)
-                price_log('Rui', price, side)
-                try:
-                    check_stop_loss('Rui', client)
-                except:
-                    print('Could Not Activate Stop-Loss')
-                    delete_price_log('Rui')
 
-                # LOG CONTRERAS BOT
-                client = bot_contreras.connect_bot()
-                print(Fore.BLACK + '    - Logging Contreras ', end='')
-                price = get_current_price(bot_symbol, client)
-                trade_on, side, size, real_size = get_trade_info(price, client)
-                wait_log('Contreras', client)
-                price_log('Contreras', price, side)
-                try:
-                    check_stop_loss('Contreras', client)
-                except:
-                    print('Could Not Activate Stop-Loss')
-                    delete_price_log('Contreras')
 
                 # LOG JEREMY BOT
                 client = bot_jeremy.connect_bot()
@@ -599,18 +561,43 @@ if __name__ == '__main__':
                 trade_on, side, size, real_size = get_trade_info(price, client)
                 wait_log('Jeremy', client)
                 price_log('Jeremy', price, side)
-                try:
-                    check_stop_loss('Jeremy', client)
-                except:
-                    print('Could Not Activate Stop-Loss')
-                    delete_price_log('Jeremy')
+                # try:
+                #     check_stop_loss('Jeremy', client)
+                # except:
+                #     print('Could Not Activate Stop-Loss')
+                #     delete_price_log('Jeremy')
 
+                # # LOG RUI BOT
+                # client = bot_rui.connect_bot()
+                # print(Fore.BLACK + '    - Logging Rui ', end='')
+                # price = get_current_price(bot_symbol, client)
+                # trade_on, side, size, real_size = get_trade_info(price, client)
+                # wait_log('Rui', client)
+                # price_log('Rui', price, side)
+                # try:
+                #     check_stop_loss('Rui', client)
+                # except:
+                #     print('Could Not Activate Stop-Loss')
+                #     delete_price_log('Rui')
+                #
+                # # LOG CONTRERAS BOT
+                # client = bot_contreras.connect_bot()
+                # print(Fore.BLACK + '    - Logging Contreras ', end='')
+                # price = get_current_price(bot_symbol, client)
+                # trade_on, side, size, real_size = get_trade_info(price, client)
+                # wait_log('Contreras', client)
+                # price_log('Contreras', price, side)
+                # try:
+                #     check_stop_loss('Contreras', client)
+                # except:
+                #     print('Could Not Activate Stop-Loss')
+                #     delete_price_log('Contreras')
 
                 print(
                     Fore.CYAN + f'    - {timestamp} - {round(minutes)} Minutes Have Passed | {round(minutesLeft)} To Go',
                     end='\n')
                 time.sleep(15)
-                counter_minutes +=1
+                counter_minutes +=5
 
 
         print(Fore.BLACK + Style.BRIGHT + ' - Main Loop', end='\n')
@@ -620,27 +607,27 @@ if __name__ == '__main__':
         client = bot_indias.connect_bot()
         df = download_initial_data(time_start, client)
 
-
-
         # INDIAS BOT
         print(Fore.BLACK + Style.BRIGHT + ' - Running Bot - Indias', end='\n')
         client = bot_indias.connect_bot()
         main_script(time_start, bot_indias.get_leverage(), bot_indias.get_name(), client)
 
-        # CONTRERAS BOT
-        print(Fore.BLACK + Style.BRIGHT + ' - Running Bot - Contreras', end='\n')
-        client = bot_contreras.connect_bot()
-        main_script(time_start, bot_contreras.get_leverage(), bot_contreras.get_name(), client)
-
-        # RUI BOT
-        print(Fore.BLACK + Style.BRIGHT + ' - Running Bot - Rui', end='\n')
-        client = bot_rui.connect_bot()
-        main_script(time_start, bot_rui.get_leverage(), bot_rui.get_name(), client)
-
         # JEREMY BOT
         print(Fore.BLACK + Style.BRIGHT + ' - Running Bot - Jeremy', end='\n')
         client = bot_jeremy.connect_bot()
         main_script(time_start, bot_jeremy.get_leverage(), bot_jeremy.get_name(), client)  # Run Script
+
+        # # CONTRERAS BOT
+        # print(Fore.BLACK + Style.BRIGHT + ' - Running Bot - Contreras', end='\n')
+        # client = bot_contreras.connect_bot()
+        # main_script(time_start, bot_contreras.get_leverage(), bot_contreras.get_name(), client)
+        #
+        # # RUI BOT
+        # print(Fore.BLACK + Style.BRIGHT + ' - Running Bot - Rui', end='\n')
+        # client = bot_rui.connect_bot()
+        # main_script(time_start, bot_rui.get_leverage(), bot_rui.get_name(), client)
+
+
 
 
 
