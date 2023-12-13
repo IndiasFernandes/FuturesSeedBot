@@ -32,7 +32,7 @@ class Bot:
 #                  config.API_SECRET_BINANCE_RUI)
 
 # Create Bot Classes
-bot_indias = Bot('Indias', datetime(2021, 11, 1), 3, config.API_KEY_BINANCE_INDIAS,
+bot_indias = Bot('Indias', datetime(2021, 11, 1), 10, config.API_KEY_BINANCE_INDIAS,
                  config.API_SECRET_BINANCE_INDIAS)
 
 bot_jeremy = Bot('Jeremy', datetime(2022, 6, 1), 6, config.API_KEY_BINANCE_JEREMY,
